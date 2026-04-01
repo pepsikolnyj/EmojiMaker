@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body, html {
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            margin: 0;
+        }
+        .flashcard-center {
+            margin: auto;
+            position: relative;
+            display: inline-block;
+        }
+        .flashcard-center img {
+            width: 250px;
+            display: block;
+            height: auto;
+            position: relative;
+        }
+        .flashcard-title {
+            position: absolute;
+            font-size: 50px;
+            font-family: 'Courier New', Courier, monospace;
+            color: white;
+            text-shadow: 3px 3px 5px black,
+                         -3px 3px 5px darkgray,
+                         3px -3px 5px gray,
+                         -3px -3px 5px white;
+            top: 50%;
+            left: 50%;
+            /* Это свойство сдвигает блок назад на 50% его СОБСТВЕННОЙ ширины */
+            transform: translate(-50%, -50%); 
+            
+            white-space: nowrap; /* Запрещаем перенос */
+            margin: 0;           /* Убираем внешние отступы h1, которые дают перекос */
+            padding: 0;          /* Убираем внутренние отступы */
+            text-align: center;  /* На всякий случай для внутренней логики текста */
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="flashcard-center">
+        <img src="imgs/ref2.png" alt="Reference Image 1">
+        <h1 class="flashcard-title">Make a reference!</h1>
+    </div>
+    <div class="bottom">
+        <p><i>Press Enter to begin...</i></p>
+    </div>
+    <script>
+
+        const title = document.querySelector('.flashcard-title');
+        const bottom = document.querySelector('.bottom');
+
+        document.addEventListener('keydown', function(event) {
+            if(event.key === 'Enter') {
+                title.textContent = " ";
+                bottom.style.display = "block";
+                bottom.innerHTML = "<p><i>Try to type something with your keyboard...</i></p>";
+                title.style.display = 'none';
+                if (event.key.length === 1 && /^[a-zа-яё]$/i.test(event.key)) {
+                    bottom.style.display = 'none';
+                    title.style.display = 'block';
+                    title.style.textDecoration = 'underline';
+                    title.textContent += event.key;
+                } else{
+                    bottom.style.display = "block";
+                    bottom.innerHTML = "<p><i>Try to type something with your keyboard...</i></p>";
+                    title.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

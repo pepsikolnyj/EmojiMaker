@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html, body {
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+
+            background-image: url('imgs/bckgrnd.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .flashcard-center {
+            margin: auto;
+            position: relative;
+            display: inline-block;
+        }
+        .flashcard-center img {
+            width: 250px;
+            display: block;
+            height: auto;
+            position: relative;
+        }
+        .flashcard-title {
+            position: absolute;
+            font-size: 50px;
+            font-family: 'Courier New', Courier, monospace;
+            color: white;
+            text-shadow: 3px 3px 5px black,
+                         -3px 3px 5px darkgray,
+                         3px -3px 5px gray,
+                         -3px -3px 5px white;
+            top: 50%;
+            left: 50%;
+            /* Это свойство сдвигает блок назад на 50% его СОБСТВЕННОЙ ширины */
+            transform: translate(-50%, -50%); 
+            
+            white-space: nowrap; /* Запрещаем перенос */
+            margin: 0;           /* Убираем внешние отступы h1, которые дают перекос */
+            padding: 0;          /* Убираем внутренние отступы */
+            text-align: center;  /* На всякий случай для внутренней логики текста */
+            text-decoration: none;
+        }
+        .flashcard-title.correct {
+            color: #4CFF4C;
+            text-shadow:
+                0 0 4px #2ECC71,
+                0 0 8px #27AE60,
+                0 0 12px #00FF7F,
+                0 0 18px #7CFC00;
+
+        }
+        .flashcard-title.incorrect {
+            color: #FF4C4C; /* мягкий, но яркий красный */
+            text-shadow:
+                0 0 4px #E74C3C,     /* тёплый красный */
+                0 0 8px #C0392B,     /* более тёмный слой */
+                0 0 12px #FF6B6B,    /* светлый красный для свечения */
+                0 0 18px #FF9999;    /* мягкая неоновая кайма */
+        }
+        .choose{
+            display: flex;
+            flex-wrap: row nowrap;
+            background-color: aqua;
+            padding: 3px;
+        }
+        .item1, .item2, .item3 {
+            background-color: aquamarine;
+            border: 2px solid;
+            width: 20px;
+            height: 20px;
+            margin: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="flashcard-center">
+        <img src="imgs/ref2.png" alt="Reference Image 1">
+        <h1 class="flashcard-title">Make a reference!</h1>
+    </div>
+    <div class="choose">
+        <div class="item1">
+
+        </div>
+        <div class="item2">
+            
+        </div>
+        <div class="item3">
+            
+        </div>
+    </div>
+    <div class="bottom">
+        <p><i>Press Enter to begin...</i></p>
+    </div>
+    <script>
+
+        const title = document.querySelector('.flashcard-title');
+        const bottom = document.querySelector('.bottom');
+        const choose = document.querySelector('.choose');
+        const correctWords = ["neus", "mond", "ogen"];
+
+        let flag = false;
+
+
+
+        choose.style.display = "none";
+
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+            title.textContent = "";
+            bottom.style.display = "block";
+            bottom.innerHTML = "<p><i>Try to type something with your keyboard...</i></p>";
+            title.style.display = 'none';
+
+            // Переключаем флаг
+            flag = true;
+
+            // 2. Проверяем флаг ВНУТРИ функции
+            if (flag) {
+                // 3. Удаляем именно ЭТУ функцию по её имени
+                document.removeEventListener('keydown', handleEnter);
+                console.log("Событие Enter больше не отслеживается");
+            }
+        }
+    }
+
+// Подключаем функцию
+    document.addEventListener('keydown', handleEnter);
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key.length === 1 && /^[a-zа-яё]$/i.test(event.key) && flag) {
+            bottom.innerHTML = "<p><i>To erase letters, use Backspace...</i></p>";
+            title.style.display = 'block';
+            title.style.textDecoration = 'underline';
+            title.textContent += event.key;
+        }
+        if (event.key === 'Backspace'){
+            title.textContent = title.textContent.slice(0, -1);
+            bottom.style.display = "block";
+            bottom.innerHTML = "<p><i>Try to type something with your keyboard...</i></p>";
+            title.classList.toggle("flashcard-title", true);
+        }
+        if (event.key === 'Enter'){
+
+            let processedTitle = title.textContent.toLowerCase();
+
+            if(correctWords.includes(processedTitle)) {
+                choose.style.display = "flex";
+                
+                
+            }
+            else {
+                choose.style.display = "none";
+                
+
+            }
+        } 
+    });
+               
+    </script>
+</body>
+</html>
