@@ -32,7 +32,7 @@
             height: auto;
             position: relative;
         }
-        .flashcard-title {
+        .flashcard-title, .flashcard-title.correct, .flashcard-title.incorrect {
             position: absolute;
             font-size: 50px;
             font-family: 'Courier New', Courier, monospace;
@@ -51,6 +51,7 @@
             padding: 0;          /* Убираем внутренние отступы */
             text-align: center;  /* На всякий случай для внутренней логики текста */
             text-decoration: none;
+            text-underline-offset: 10px;
         }
         .flashcard-title.correct {
             color: #4CFF4C;
@@ -69,18 +70,29 @@
                 0 0 12px #FF6B6B,    /* светлый красный для свечения */
                 0 0 18px #FF9999;    /* мягкая неоновая кайма */
         }
-        .choose{
+        .choose {
             display: flex;
-            flex-wrap: row nowrap;
-            background-color: aqua;
-            padding: 3px;
+            gap: 10px;
+            position: absolute; /* поверх всего */
+            bottom: 40px;       /* немного от нижнего края */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;       /* выше flashcard-title */
+            padding: 10px;
+            background-color: rgba(122, 120, 120, 0.541); /* видимый фон */
+            border-radius: 15px;
         }
         .item1, .item2, .item3 {
-            background-color: aquamarine;
-            border: 2px solid;
-            width: 20px;
-            height: 20px;
-            margin: 3px;
+            width: 100px;
+            height: 65px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 38px;
+            background-color: rgba(255, 255, 255, 0.3);
+            font-size: 2em;
+            color: #087d73;
+            border: 2px solid rgba(255,255,255,0.5);
         }
     </style>
 </head>
@@ -111,14 +123,12 @@
         const correctWords = ["neus", "mond", "ogen"];
 
         let flag = false;
-
-
+        let userInput = "";
 
         choose.style.display = "none";
 
         function handleEnter(event) {
             if (event.key === 'Enter') {
-            title.textContent = "";
             bottom.style.display = "block";
             bottom.innerHTML = "<p><i>Try to type something with your keyboard...</i></p>";
             title.style.display = 'none';
@@ -130,44 +140,65 @@
             if (flag) {
                 // 3. Удаляем именно ЭТУ функцию по её имени
                 document.removeEventListener('keydown', handleEnter);
+                document.addEventListener('keydown', handleInput);
+                document.addEventListener('keydown', checkWord);
+
                 console.log("Событие Enter больше не отслеживается");
             }
         }
     }
-
-// Подключаем функцию
-    document.addEventListener('keydown', handleEnter);
-
-    document.addEventListener('keydown', function(event) {
+    function handleInput(event){
         if (event.key.length === 1 && /^[a-zа-яё]$/i.test(event.key) && flag) {
             bottom.innerHTML = "<p><i>To erase letters, use Backspace...</i></p>";
             title.style.display = 'block';
             title.style.textDecoration = 'underline';
-            title.textContent += event.key;
+            userInput += event.key;
+            renderSpacedText(userInput);
         }
         if (event.key === 'Backspace'){
-            title.textContent = title.textContent.slice(0, -1);
+            userInput = userInput.slice(0, -1);
+            renderSpacedText(userInput);
             bottom.style.display = "block";
             bottom.innerHTML = "<p><i>Try to type something with your keyboard...</i></p>";
-            title.classList.toggle("flashcard-title", true);
+            choose.style.display = "none";
+            title.classList.remove("correct", "incorrect")
+            title.classList.add("flashcard-title");
+            // title.style.color = "white";
         }
+    }
+    function renderSpacedText(text){
+        title.innerHTML = "";
+
+        text.split("").forEach(letter => {
+            const span = document.createElement("span");
+            span.textContent = letter;
+            span.style.marginRight = "10px";
+            title.appendChild(span);
+        });
+    }
+    function checkWord(event){
         if (event.key === 'Enter'){
 
-            let processedTitle = title.textContent.toLowerCase();
+            let processedTitle = title.textContent.replace(/\s/g, "").toLowerCase();
 
             if(correctWords.includes(processedTitle)) {
                 choose.style.display = "flex";
-                
-                
+                title.classList.remove("incorrect")
+                title.classList.add("correct");
+                // title.style.color = "#4CFF4C";
             }
             else {
                 choose.style.display = "none";
-                
-
+                title.classList.remove("correct")
+                title.classList.add("incorrect");
+                // title.style.color = "#FF4C4C";
             }
         } 
-    });
-               
+    }
+
+    document.addEventListener('keydown', handleEnter);
+
+
     </script>
 </body>
 </html>
