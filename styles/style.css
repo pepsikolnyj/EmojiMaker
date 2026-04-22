@@ -1,0 +1,121 @@
+html, body {
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+
+    background-image: url('../imgs/bckgrnd.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.flashcard-center {
+    position: relative;
+    display: inline-block;
+}
+
+.head-img {
+    color: #eee72b;
+    width: 250px;
+    display: block;
+    z-index: 1; /* Самый нижний слой */
+}
+
+.face-part {
+    position: absolute;
+    width: 100%; /* Растягиваем до размера головы, если спрайты одинакового размера */
+    top: 0;
+    left: 0;
+    z-index: 5; /* Поверх головы */
+    pointer-events: none; /* Чтобы картинки не мешали кликать */
+}
+
+/* Если спрайты только глаз/рта (маленькие картинки) */
+#layer-eyes {
+    width: 170px; /* Примерный размер */
+    top: 25%;     /* Положение на лице */
+    left: 50%;
+    transform: translateX(-50%);
+}
+.flashcard-title, .flashcard-title.correct, .flashcard-title.incorrect {
+    position: absolute;
+    font-size: 50px;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+    text-shadow: 3px 3px 5px black,
+                    -3px 3px 5px darkgray,
+                    3px -3px 5px gray,
+                    -3px -3px 5px white;
+    top: 50%;
+    left: 50%;
+    /* Это свойство сдвигает блок назад на 50% его СОБСТВЕННОЙ ширины */
+    transform: translate(-50%, -50%); 
+    
+    white-space: nowrap; /* Запрещаем перенос */
+    margin: 0;           /* Убираем внешние отступы h1, которые дают перекос */
+    padding: 0;          /* Убираем внутренние отступы */
+    text-align: center;  /* На всякий случай для внутренней логики текста */
+    text-decoration: none;
+    text-underline-offset: 10px;
+    z-index: 15;
+}
+.flashcard-title.correct {
+    color: #4CFF4C;
+    text-shadow:
+        0 0 4px #2ECC71,
+        0 0 8px #27AE60,
+        0 0 12px #00FF7F,
+        0 0 18px #7CFC00;
+
+}
+.flashcard-title.incorrect {
+    color: #FF4C4C; /* мягкий, но яркий красный */
+    text-shadow:
+        0 0 4px #E74C3C,     /* тёплый красный */
+        0 0 8px #C0392B,     /* более тёмный слой */
+        0 0 12px #FF6B6B,    /* светлый красный для свечения */
+        0 0 18px #FF9999;    /* мягкая неоновая кайма */
+}
+.choose {
+    display: flex;
+    gap: 10px;
+    position: absolute; /* поверх всего */
+    bottom: 40px;       /* немного от нижнего края */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;       /* выше flashcard-title */
+    padding: 10px;
+    background-color: rgba(122, 120, 120, 0.541); /* видимый фон */
+    border-radius: 15px;
+}
+.item1, .item2, .item3, .item4, .item5 {
+    width: 100px;
+    height: 65px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 38px;
+    background-color: rgba(255, 255, 255, 0.3);
+    font-size: 2em;
+    color: #087d73;
+    border: 2px solid rgba(255,255,255,0.5);
+}
+.chooseImage {
+    width: 50px;
+    height: auto;
+    justify-self: center;
+}
+#layer-mouth {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;     /* одинаковая рамка */
+    height: 90px;     /* одинаковая рамка */
+    object-fit: contain;
+    pointer-events: none;
+}
